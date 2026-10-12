@@ -1,4 +1,4 @@
-# vim-rex-navigator
+# Vim Rex Navigator
 
 Move between Vim windows and [Rex](https://www.superlogical.com/rex) panes with the same keymaps, in the spirit of [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator).
 
