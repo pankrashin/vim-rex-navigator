@@ -1,6 +1,6 @@
 # Vim Rex Navigator
 
-Move between Vim windows and [Rex](https://www.superlogical.com/rex) panes with the same keymaps, in the spirit of [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator).
+Move between and close Vim windows and [Rex](https://www.superlogical.com/rex) panes with the same keymaps, in the spirit of [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator).
 
 > [!IMPORTANT]
 > Rex is currently in beta, expect breaking changes.
@@ -8,10 +8,13 @@ Move between Vim windows and [Rex](https://www.superlogical.com/rex) panes with 
 ## Usage
 
 Default keymaps are:
-- ⌘⌥◀ → Left
-- ⌘⌥▶ → Right
-- ⌘⌥▲ → Up
-- ⌘⌥▼ → Down
+- ⌥⌘◀ → Left
+- ⌥⌘▶ → Right
+- ⌥⌘▲ → Up
+- ⌥⌘▼ → Down
+- ⌘W → Close
+
+In a Rex pane, ⌘W closes the pane. In (n)vim, it closes the current Vim window instead. Closing the last window quits (n)vim, asking first if there are unsaved changes, and pressing ⌘W again then closes the Rex pane.
 
 If you want to use alternate key mappings, see the configuration section below.
 
@@ -65,7 +68,14 @@ require("vim-rex-navigator").setup{
   down  = "ctrl+j",
   up    = "ctrl+k",
   right = "ctrl+l",
+  close = "alt+w",
 }
+```
+
+To leave the close key to Rex, set `close` to `false`:
+
+```lua
+require("vim-rex-navigator").setup { close = false }
 ```
 
 On the Neovim side, turn off the default mappings and map the commands yourself:
@@ -77,6 +87,7 @@ vim.keymap.set({ "n", "t" }, "<C-h>", "<cmd>RexNavigateLeft<cr>")
 vim.keymap.set({ "n", "t" }, "<C-j>", "<cmd>RexNavigateDown<cr>")
 vim.keymap.set({ "n", "t" }, "<C-k>", "<cmd>RexNavigateUp<cr>")
 vim.keymap.set({ "n", "t" }, "<C-l>", "<cmd>RexNavigateRight<cr>")
+vim.keymap.set({ "n", "t" }, "<M-w>", "<cmd>confirm quit<cr>")
 ```
 
 The keys must match on both sides.
@@ -114,10 +125,10 @@ Wrapping applies to Rex panes only, Vim windows do not wrap.
 
 The commands are available without calling `setup`. From Lua, the same is `require("vim-rex-navigator").navigate("left")`.
 
-The Rex part also adds the action `nav_focus`, which moves focus away from the pane it is run in without checking for (n)vim:
+The Rex part also adds the action `vim_rex_focus`, which moves focus away from the pane it is run in without checking for (n)vim:
 
 ```sh
-rex do nav_focus direction=left
+rex do vim_rex_focus direction=left
 ```
 
 ## Limitations
@@ -126,3 +137,5 @@ rex do nav_focus direction=left
 - A zoomed pane can still move focus to a pane hidden behind it.
 - A pane started with a script as its command reports the script, not nvim,
   as the foreground process.
+- When nvim is not detected, as in the cases above, the close key closes the
+  whole Rex pane, including any unsaved changes in nvim.
