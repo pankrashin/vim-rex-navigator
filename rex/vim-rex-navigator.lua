@@ -15,6 +15,12 @@ end
 
 function M.setup(keys)
   keys = keys or {}
+
+  rex.unbind('alt+cmd+left', 'pane.focus.left')
+  rex.unbind('alt+cmd+right', 'pane.focus.right')
+  rex.unbind('alt+cmd+up', 'pane.focus.up')
+  rex.unbind('alt+cmd+down', 'pane.focus.down')
+
   rex.bind(keys.left or 'alt+cmd+left', function(ctx) return move(ctx, 'left') end)
   rex.bind(keys.right or 'alt+cmd+right', function(ctx) return move(ctx, 'right') end)
   rex.bind(keys.up or 'alt+cmd+up', function(ctx) return move(ctx, 'up') end)
