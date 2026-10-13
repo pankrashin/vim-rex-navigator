@@ -72,16 +72,10 @@ require("vim-rex-navigator").setup{
 }
 ```
 
-To leave the close key to Rex, set `close` to `false`:
+On the Vim side, turn off the default mappings and map them yourself. `mappings = false` turns off the navigation mappings and `close = false` turns off the close mapping:
 
 ```lua
-require("vim-rex-navigator").setup { close = false }
-```
-
-On the Neovim side, turn off the default mappings and map the commands yourself:
-
-```lua
-require("vim-rex-navigator").setup { mappings = false }
+require("vim-rex-navigator").setup { mappings = false, close = false }
 
 vim.keymap.set({ "n", "t" }, "<C-h>", "<cmd>RexNavigateLeft<cr>")
 vim.keymap.set({ "n", "t" }, "<C-j>", "<cmd>RexNavigateDown<cr>")
@@ -91,6 +85,18 @@ vim.keymap.set({ "n", "t" }, "<M-w>", "<cmd>confirm quit<cr>")
 ```
 
 The keys must match on both sides.
+
+### Closing
+
+To turn off closing keymaps, set `close` to `false` on both sides. Rex then keeps its own behaviour for ⌘W, and Vim gets no close mapping:
+
+```lua
+-- Rex
+require("vim-rex-navigator").setup { close = false }
+
+-- Vim
+require("vim-rex-navigator").setup { close = false }
+```
 
 ### Wrapping
 
