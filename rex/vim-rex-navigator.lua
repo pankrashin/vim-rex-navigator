@@ -14,10 +14,11 @@ local function move(ctx, dir)
 end
 
 function M.setup(keys)
-  rex.bind(keys.left, function(ctx) return move(ctx, 'left') end)
-  rex.bind(keys.right, function(ctx) return move(ctx, 'right') end)
-  rex.bind(keys.up, function(ctx) return move(ctx, 'up') end)
-  rex.bind(keys.down, function(ctx) return move(ctx, 'down') end)
+  keys = keys or {}
+  rex.bind(keys.left or 'alt+cmd+left', function(ctx) return move(ctx, 'left') end)
+  rex.bind(keys.right or 'alt+cmd+right', function(ctx) return move(ctx, 'right') end)
+  rex.bind(keys.up or 'alt+cmd+up', function(ctx) return move(ctx, 'up') end)
+  rex.bind(keys.down or 'alt+cmd+down', function(ctx) return move(ctx, 'down') end)
 
   rex.action({
     name = 'nav_focus',
