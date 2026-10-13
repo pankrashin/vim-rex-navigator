@@ -81,6 +81,28 @@ vim.keymap.set({ "n", "t" }, "<C-l>", "<cmd>RexNavigateRight<cr>")
 
 The keys must match on both sides.
 
+### Wrapping
+
+By default, focus stops at the edge of the window. To wrap around to the pane on the opposite side, set `wrap` in the Rex `setup`:
+
+```lua
+require("vim-rex-navigator").setup { wrap = true }
+```
+
+It can be combined with custom keymaps:
+
+```lua
+require("vim-rex-navigator").setup {
+  left  = "ctrl+h",
+  down  = "ctrl+j",
+  up    = "ctrl+k",
+  right = "ctrl+l",
+  wrap  = true,
+}
+```
+
+Wrapping applies to Rex panes only, Vim windows do not wrap.
+
 ### Commands
 
 | Command | Moves |
