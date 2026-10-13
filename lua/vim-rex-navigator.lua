@@ -14,10 +14,10 @@ function M.setup(opts)
   opts = opts or {}
   if opts.mappings == false then return end
 
-  vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-D-Left>', function() M.navigate('left') end)
-  vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-D-Down>', function() M.navigate('down') end)
-  vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-D-Up>', function() M.navigate('up') end)
-  vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-D-Right>', function() M.navigate('right') end)
+  vim.keymap.set({ 'n', 't' }, '<A-D-Left>', function() M.navigate('left') end)
+  vim.keymap.set({ 'n', 't' }, '<A-D-Down>', function() M.navigate('down') end)
+  vim.keymap.set({ 'n', 't' }, '<A-D-Up>', function() M.navigate('up') end)
+  vim.keymap.set({ 'n', 't' }, '<A-D-Right>', function() M.navigate('right') end)
 end
 
 return M
