@@ -35,6 +35,16 @@ With [lazy.nvim](https://github.com/folke/lazy.nvim):
 { "pankrashin/vim-rex-navigator", lazy = false, main = "vim-rex-navigator", opts = {} }
 ```
 
+### Vim
+
+Requires Vim 8.2.1978 or newer. With [vim-plug](https://github.com/junegunn/vim-plug):
+
+```vim
+Plug 'pankrashin/vim-rex-navigator'
+```
+
+There is no `setup` call in Vim, the default keymaps are active as soon as the plugin loads.
+
 ### Rex
 
 Add to `~/.config/rex/init.lua`, pointing `package.path` at the `rex/` folder of this repository. With `vim.pack`, that's the copy Neovim installed:
@@ -47,7 +57,7 @@ package.path = os.getenv("HOME")
 require("vim-rex-navigator").setup()
 ```
 
-With lazy.nvim, the path is `~/.local/share/nvim/lazy/vim-rex-navigator/rex/`. You can also clone the repository anywhere and use that path instead, or symlink `rex/vim-rex-navigator.lua` into `~/.config/rex/`.
+With lazy.nvim, the path is `~/.local/share/nvim/lazy/vim-rex-navigator/rex/`, with vim-plug it is `~/.vim/plugged/vim-rex-navigator/rex/`. You can also clone the repository anywhere and use that path instead, or symlink `rex/vim-rex-navigator.lua` into `~/.config/rex/`.
 
 Then reload the configuration:
 
@@ -72,7 +82,7 @@ require("vim-rex-navigator").setup{
 }
 ```
 
-On the Vim side, turn off the default mappings and map them yourself. `mappings = false` turns off the navigation mappings and `close = false` turns off the close mapping:
+On the Neovim side, turn off the default mappings and map them yourself. `mappings = false` turns off the navigation mappings and `close = false` turns off the close mapping:
 
 ```lua
 require("vim-rex-navigator").setup { mappings = false, close = false }
@@ -84,7 +94,28 @@ vim.keymap.set({ "n", "t" }, "<C-l>", "<cmd>RexNavigateRight<cr>")
 vim.keymap.set({ "n", "t" }, "<M-w>", "<cmd>confirm quit<cr>")
 ```
 
-The keys must match on both sides.
+On the Vim side, do the same in your `vimrc`. `g:rex_navigator_mappings = 0` turns off the navigation mappings and `g:rex_navigator_close = 0` turns off the close mapping:
+
+```vim
+let g:rex_navigator_mappings = 0
+let g:rex_navigator_close = 0
+
+nnoremap <silent> <C-h> <Cmd>RexNavigateLeft<CR>
+nnoremap <silent> <C-j> <Cmd>RexNavigateDown<CR>
+nnoremap <silent> <C-k> <Cmd>RexNavigateUp<CR>
+nnoremap <silent> <C-l> <Cmd>RexNavigateRight<CR>
+nnoremap <silent> <M-w> <Cmd>confirm quit<CR>
+
+tnoremap <silent> <C-h> <Cmd>RexNavigateLeft<CR>
+tnoremap <silent> <C-j> <Cmd>RexNavigateDown<CR>
+tnoremap <silent> <C-k> <Cmd>RexNavigateUp<CR>
+tnoremap <silent> <C-l> <Cmd>RexNavigateRight<CR>
+tnoremap <silent> <M-w> <Cmd>confirm quit<CR>
+```
+
+Neovim writes ⌘ as `<D-…>`, but terminal Vim writes it as `<T-…>`. For example, ⌥⌘◀ is `<M-D-Left>` in Neovim and `<M-T-Left>` in Vim, and ⌘W is `<D-w>` in Neovim and `<T-w>` in Vim.
+
+The keys must match on both sides. They must also not be bound to anything else in your Rex configuration, otherwise Rex handles them before they reach (n)vim.
 
 ### Closing
 
@@ -94,8 +125,13 @@ To turn off closing keymaps, set `close` to `false` on both sides. Rex then keep
 -- Rex
 require("vim-rex-navigator").setup { close = false }
 
--- Vim
+-- Neovim
 require("vim-rex-navigator").setup { close = false }
+```
+
+```vim
+" Vim
+let g:rex_navigator_close = 0
 ```
 
 ### Wrapping
@@ -129,7 +165,7 @@ Wrapping applies to Rex panes only, Vim windows do not wrap.
 | `:RexNavigateUp` | Up |
 | `:RexNavigateRight` | Right |
 
-The commands are available without calling `setup`. From Lua, the same is `require("vim-rex-navigator").navigate("left")`.
+The commands are available without calling `setup` in Neovim, and as soon as the plugin loads in Vim. From Lua, the same is `require("vim-rex-navigator").navigate("left")`.
 
 The Rex part also adds the action `vim_rex_focus`, which moves focus away from the pane it is run in without checking for (n)vim:
 
