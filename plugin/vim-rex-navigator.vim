@@ -23,13 +23,10 @@ command! RexNavigateDown  call s:navigate('down')
 command! RexNavigateUp    call s:navigate('up')
 command! RexNavigateRight call s:navigate('right')
 
-" vim reports cmd as <T-…>, macvim as <D-…>
 if get(g:, 'rex_navigator_close', 1)
   nnoremap <silent> <T-w> <Cmd>confirm quit<CR>
-  nnoremap <silent> <D-w> <Cmd>confirm quit<CR>
   if has('terminal')
     tnoremap <silent> <T-w> <Cmd>confirm quit<CR>
-    tnoremap <silent> <D-w> <Cmd>confirm quit<CR>
   endif
 endif
 
@@ -38,18 +35,10 @@ if get(g:, 'rex_navigator_mappings', 1)
   nnoremap <silent> <M-T-Down>  <Cmd>RexNavigateDown<CR>
   nnoremap <silent> <M-T-Up>    <Cmd>RexNavigateUp<CR>
   nnoremap <silent> <M-T-Right> <Cmd>RexNavigateRight<CR>
-  nnoremap <silent> <M-D-Left>  <Cmd>RexNavigateLeft<CR>
-  nnoremap <silent> <M-D-Down>  <Cmd>RexNavigateDown<CR>
-  nnoremap <silent> <M-D-Up>    <Cmd>RexNavigateUp<CR>
-  nnoremap <silent> <M-D-Right> <Cmd>RexNavigateRight<CR>
   if has('terminal')
     tnoremap <silent> <M-T-Left>  <Cmd>RexNavigateLeft<CR>
     tnoremap <silent> <M-T-Down>  <Cmd>RexNavigateDown<CR>
     tnoremap <silent> <M-T-Up>    <Cmd>RexNavigateUp<CR>
     tnoremap <silent> <M-T-Right> <Cmd>RexNavigateRight<CR>
-    tnoremap <silent> <M-D-Left>  <Cmd>RexNavigateLeft<CR>
-    tnoremap <silent> <M-D-Down>  <Cmd>RexNavigateDown<CR>
-    tnoremap <silent> <M-D-Up>    <Cmd>RexNavigateUp<CR>
-    tnoremap <silent> <M-D-Right> <Cmd>RexNavigateRight<CR>
   endif
 endif
