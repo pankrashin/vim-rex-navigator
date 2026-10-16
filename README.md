@@ -65,7 +65,7 @@ There is no `setup` call in Vim, the default keymaps are active as soon as the p
 
 ### Rex
 
-Add to `~/.config/rex/init.lua`, pointing `package.path` at the `rex/` folder of the copy your plugin manager installed.
+Add to `~/.config/rex/init.lua`, pointing `package.path` at the `rex/` directory of the copy your plugin manager installed.
 
 With `vim.pack`:
 
@@ -99,7 +99,7 @@ require("vim-rex-navigator").setup()
 
 The paths above are the defaults. If you set `$XDG_DATA_HOME` or changed where your plugin manager installs plugins, adjust them to match.
 
-Without a plugin manager, clone the repository anywhere and point `package.path` at its `rex/` folder:
+Without a plugin manager, clone the repository anywhere and point `package.path` at its `rex/` directory:
 
 ```sh
 git clone https://github.com/pankrashin/vim-rex-navigator ~/src/vim-rex-navigator
