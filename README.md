@@ -231,7 +231,7 @@ nnoremap <silent> <M-w> <Cmd>confirm quit<CR>
 
 For terminal windows, add the same bindings with `tnoremap`.
 
-Neovim writes ⌘ as `<D-…>`, but Vim writes it as `<T-…>`. For example, ⌥⌘◀ is `<M-D-Left>` in Neovim and `<M-T-Left>` in Vim, and ⌘W is `<D-w>` in Neovim and `<T-w>` in Vim.
+Neovim writes ⌘ as `<D-…>`, but Vim writes it as `<T-…>`. For example, ⌥⌘ ◀ is `<M-D-Left>` in Neovim and `<M-T-Left>` in Vim, and ⌘W is `<D-w>` in Neovim and `<T-w>` in Vim.
 
 The keys must match on both sides. They must also not be bound to anything else in your Rex configuration, otherwise Rex handles them before they reach Vim or Neovim.
 
