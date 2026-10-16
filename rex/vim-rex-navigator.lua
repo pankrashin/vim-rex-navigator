@@ -2,6 +2,8 @@ local M = {}
 
 local VIM = { vim = true, nvim = true }
 local DIRECTIONS = { left = true, right = true, up = true, down = true }
+local AXIS = { left = 'horizontal', right = 'horizontal', up = 'vertical', down = 'vertical' }
+local STEP = { left = -1, right = 1, up = -1, down = 1 }
 
 local function is_vim(block_id)
   local p = rex.block.call('com.superlogical.terminal', 'process', { block_id = block_id })
@@ -107,7 +109,7 @@ local function neighboring_pane(panes, src, direction)
   return best and best.id
 end
 
-local function swap(dir)
+local function swap_blocks(dir)
   if not DIRECTIONS[dir] then return end
 
   local window = active_window()
@@ -124,7 +126,7 @@ end
 
 local function move(ctx, dir)
   if is_vim(ctx.block_id) then return false end
-  return swap(dir)
+  return swap_blocks(dir)
 end
 
 local function focus(ctx, dir, wrap)
@@ -138,6 +140,62 @@ local function focus(ctx, dir, wrap)
   return true
 end
 
+local function first_block(node)
+  if node.block_id then return node.block_id end
+  return first_block(node.split.before)
+end
+
+local function divider(node, block_id, axis, nearest)
+  if node.block_id then
+    if node.block_id == block_id then return nearest end
+    return nil
+  end
+
+  local split = node.split
+  if split.direction == axis then nearest = split end
+
+  local found = divider(split.before, block_id, axis, nearest)
+  if found then return found end
+
+  return divider(split.after, block_id, axis, nearest)
+end
+
+local function resize_split(dir, amount)
+  if not DIRECTIONS[dir] then return end
+
+  local window = active_window()
+  if window == nil or window.zoomed_block_id then return end
+
+  local split = nil
+
+  for _, layer in ipairs(window.layers) do
+    if split == nil and layer.layout ~= nil then
+      split = divider(layer.layout, window.focused_block_id, AXIS[dir], nil)
+    end
+  end
+
+  if split == nil then return true end
+
+  local min_ratio = 0.05
+  local ratio = split.ratio + STEP[dir] * amount / 100
+  ratio = math.min(ratio, 1 - min_ratio)
+  ratio = math.max(ratio, min_ratio)
+
+  rex.session.resize_pane({
+    direction = split.direction,
+    before_block_id = first_block(split.before),
+    after_block_id = first_block(split.after),
+    ratio = ratio,
+  })
+
+  return true
+end
+
+local function resize(ctx, dir, amount)
+  if is_vim(ctx.block_id) then return false end
+  return resize_split(dir, amount)
+end
+
 local function close(ctx)
   if is_vim(ctx.block_id) then return false end
   rex.call('block.close', { session_id = ctx.session_id, block_id = ctx.block_id })
@@ -146,11 +204,10 @@ end
 
 function M.setup(opts)
   opts = opts or {}
-  local wrap = opts.wrap == true
 
-  local close_key = opts.close
-  if close_key == nil or close_key == true then close_key = 'cmd+w' end
-  if close_key then rex.bind(close_key, close) end
+  local focus_wrap = opts.focus_wrap == true
+  local resize_amount = opts.resize_amount or 5
+  local close_key = (opts.close == nil or opts.close == true) and 'cmd+w' or opts.close
 
   if opts.focus ~= false then
     rex.unbind('opt+cmd+left', 'pane.focus.left')
@@ -158,10 +215,10 @@ function M.setup(opts)
     rex.unbind('opt+cmd+up', 'pane.focus.up')
     rex.unbind('opt+cmd+right', 'pane.focus.right')
 
-    rex.bind(opts.focus_left or 'opt+cmd+left', function(ctx) return focus(ctx, 'left', wrap) end)
-    rex.bind(opts.focus_down or 'opt+cmd+down', function(ctx) return focus(ctx, 'down', wrap) end)
-    rex.bind(opts.focus_up or 'opt+cmd+up', function(ctx) return focus(ctx, 'up', wrap) end)
-    rex.bind(opts.focus_right or 'opt+cmd+right', function(ctx) return focus(ctx, 'right', wrap) end)
+    rex.bind(opts.focus_left or 'opt+cmd+left', function(ctx) return focus(ctx, 'left', focus_wrap) end)
+    rex.bind(opts.focus_down or 'opt+cmd+down', function(ctx) return focus(ctx, 'down', focus_wrap) end)
+    rex.bind(opts.focus_up or 'opt+cmd+up', function(ctx) return focus(ctx, 'up', focus_wrap) end)
+    rex.bind(opts.focus_right or 'opt+cmd+right', function(ctx) return focus(ctx, 'right', focus_wrap) end)
   end
 
   if opts.move ~= false then
@@ -176,19 +233,35 @@ function M.setup(opts)
     rex.bind(opts.move_right or 'shift+opt+cmd+right', function(ctx) return move(ctx, 'right') end)
   end
 
+  if opts.resize ~= false then
+    rex.bind(opts.resize_left or 'ctrl+opt+cmd+left', function(ctx) return resize(ctx, 'left', resize_amount) end)
+    rex.bind(opts.resize_down or 'ctrl+opt+cmd+down', function(ctx) return resize(ctx, 'down', resize_amount) end)
+    rex.bind(opts.resize_up or 'ctrl+opt+cmd+up', function(ctx) return resize(ctx, 'up', resize_amount) end)
+    rex.bind(opts.resize_right or 'ctrl+opt+cmd+right', function(ctx) return resize(ctx, 'right', resize_amount) end)
+  end
+
+  if close_key then rex.bind(close_key, close) end
+
   -- these actions are called from (n)vim
   rex.action({
     name = 'vim_rex_focus',
     title = 'Focus Neighbouring Rex Pane',
     args = { direction = 'string' },
-    run = function(ctx, args) rex.session.focus_direction({ direction = args.direction, wrap = wrap }) end,
+    run = function(ctx, args) rex.session.focus_direction({ direction = args.direction, wrap = focus_wrap }) end,
   })
 
   rex.action({
     name = 'vim_rex_move',
     title = 'Move Rex Pane',
     args = { direction = 'string' },
-    run = function(ctx, args) swap(args.direction) end,
+    run = function(ctx, args) swap_blocks(args.direction) end,
+  })
+
+  rex.action({
+    name = 'vim_rex_resize',
+    title = 'Resize Rex Pane',
+    args = { direction = 'string', amount = 'number?' },
+    run = function(ctx, args) resize_split(args.direction, args.amount or resize_amount) end,
   })
 end
 

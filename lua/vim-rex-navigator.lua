@@ -27,7 +27,7 @@ function M.move(dir)
   end
 end
 
-function M.navigate(dir)
+function M.focus(dir)
   local win = vim.api.nvim_get_current_win()
   vim.cmd('wincmd ' .. WINCMD[dir])
   if win == vim.api.nvim_get_current_win() and vim.env.REX_SESSION then
@@ -35,14 +35,43 @@ function M.navigate(dir)
   end
 end
 
+function M.resize(dir, amount)
+  amount = amount or 3
+
+  local horizontal = dir == 'left' or dir == 'right'
+  local current = vim.fn.winnr()
+  local before
+  local after
+
+  if horizontal then
+    before = vim.fn.winnr('h')
+    after = vim.fn.winnr('l')
+  else
+    before = vim.fn.winnr('k')
+    after = vim.fn.winnr('j')
+  end
+
+  if before == current and after == current then
+    if vim.env.REX_SESSION then vim.system({ 'rex', 'do', 'vim_rex_resize', 'direction=' .. dir }) end
+    return
+  end
+
+  local grow = dir == 'right' or dir == 'down'
+  if after == current then grow = not grow end
+
+  local sign = grow and '+' or '-'
+  local command = horizontal and 'vertical resize ' or 'resize '
+  vim.cmd(command .. sign .. amount)
+end
+
 function M.setup(opts)
   opts = opts or {}
 
   if opts.focus ~= false then
-    vim.keymap.set({ 'n', 't' }, '<M-D-Left>', function() M.navigate('left') end)
-    vim.keymap.set({ 'n', 't' }, '<M-D-Down>', function() M.navigate('down') end)
-    vim.keymap.set({ 'n', 't' }, '<M-D-Up>', function() M.navigate('up') end)
-    vim.keymap.set({ 'n', 't' }, '<M-D-Right>', function() M.navigate('right') end)
+    vim.keymap.set({ 'n', 't' }, '<M-D-Left>', function() M.focus('left') end)
+    vim.keymap.set({ 'n', 't' }, '<M-D-Down>', function() M.focus('down') end)
+    vim.keymap.set({ 'n', 't' }, '<M-D-Up>', function() M.focus('up') end)
+    vim.keymap.set({ 'n', 't' }, '<M-D-Right>', function() M.focus('right') end)
   end
 
   if opts.move ~= false then
@@ -50,6 +79,13 @@ function M.setup(opts)
     vim.keymap.set({ 'n', 't' }, '<S-M-D-Down>', function() M.move('down') end)
     vim.keymap.set({ 'n', 't' }, '<S-M-D-Up>', function() M.move('up') end)
     vim.keymap.set({ 'n', 't' }, '<S-M-D-Right>', function() M.move('right') end)
+  end
+
+  if opts.resize ~= false then
+    vim.keymap.set({ 'n', 't' }, '<C-M-D-Left>', function() M.resize('left') end)
+    vim.keymap.set({ 'n', 't' }, '<C-M-D-Down>', function() M.resize('down') end)
+    vim.keymap.set({ 'n', 't' }, '<C-M-D-Up>', function() M.resize('up') end)
+    vim.keymap.set({ 'n', 't' }, '<C-M-D-Right>', function() M.resize('right') end)
   end
 
   if opts.close ~= false then vim.keymap.set({ 'n', 't' }, '<D-w>', '<cmd>confirm quit<cr>') end

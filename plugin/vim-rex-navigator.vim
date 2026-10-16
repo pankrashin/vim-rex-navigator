@@ -5,7 +5,7 @@ let g:loaded_vim_rex_navigator = 1
 
 let s:wincmd = {'left': 'h', 'down': 'j', 'up': 'k', 'right': 'l'}
 
-function! s:navigate(dir) abort
+function! s:focus(dir) abort
   let l:win = win_getid()
   execute 'wincmd' s:wincmd[a:dir]
   if l:win == win_getid() && !empty($REX_SESSION)
@@ -18,10 +18,10 @@ function! s:navigate(dir) abort
   endif
 endfunction
 
-command! RexNavigateLeft  call s:navigate('left')
-command! RexNavigateDown  call s:navigate('down')
-command! RexNavigateUp    call s:navigate('up')
-command! RexNavigateRight call s:navigate('right')
+command! RexFocusLeft  call s:focus('left')
+command! RexFocusDown  call s:focus('down')
+command! RexFocusUp    call s:focus('up')
+command! RexFocusRight call s:focus('right')
 
 if get(g:, 'rex_navigator_close', 1)
   nnoremap <silent> <T-w> <Cmd>confirm quit<CR>
@@ -31,14 +31,14 @@ if get(g:, 'rex_navigator_close', 1)
 endif
 
 if get(g:, 'rex_navigator_mappings', 1)
-  nnoremap <silent> <M-T-Left>  <Cmd>RexNavigateLeft<CR>
-  nnoremap <silent> <M-T-Down>  <Cmd>RexNavigateDown<CR>
-  nnoremap <silent> <M-T-Up>    <Cmd>RexNavigateUp<CR>
-  nnoremap <silent> <M-T-Right> <Cmd>RexNavigateRight<CR>
+  nnoremap <silent> <M-T-Left>  <Cmd>RexFocusLeft<CR>
+  nnoremap <silent> <M-T-Down>  <Cmd>RexFocusDown<CR>
+  nnoremap <silent> <M-T-Up>    <Cmd>RexFocusUp<CR>
+  nnoremap <silent> <M-T-Right> <Cmd>RexFocusRight<CR>
   if has('terminal')
-    tnoremap <silent> <M-T-Left>  <Cmd>RexNavigateLeft<CR>
-    tnoremap <silent> <M-T-Down>  <Cmd>RexNavigateDown<CR>
-    tnoremap <silent> <M-T-Up>    <Cmd>RexNavigateUp<CR>
-    tnoremap <silent> <M-T-Right> <Cmd>RexNavigateRight<CR>
+    tnoremap <silent> <M-T-Left>  <Cmd>RexFocusLeft<CR>
+    tnoremap <silent> <M-T-Down>  <Cmd>RexFocusDown<CR>
+    tnoremap <silent> <M-T-Up>    <Cmd>RexFocusUp<CR>
+    tnoremap <silent> <M-T-Right> <Cmd>RexFocusRight<CR>
   endif
 endif
