@@ -1,5 +1,3 @@
-{{TOC}}
-
 # Vim Rex Navigator
 
 Focus, move, resize and close Vim windows and [Rex](https://www.superlogical.com/rex) panes seamlessly with the same key bindings, in the spirit of [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator).
@@ -36,7 +34,7 @@ By default this plugin utilizes the default Rex key bindings wherever it is poss
 
 - ⌘W
 
-If you want to use alternate key mappings, see the configuration section below.
+If you want to use alternate key bindings, see the [key bindings configuration](#keymaps) section below.
 
 ## Installation
 
@@ -176,7 +174,7 @@ Rex then keeps its own behavior for those keys.
 
 #### Neovim
 
-On the Neovim side, turn off the default mappings and map them yourself. `focus`, `move`, `resize` and `close` each turn off their own mappings:
+On the Neovim side, turn off the default bindings and map them yourself. `focus`, `move`, `resize` and `close` each turn off their own bindings:
 
 ```lua
 require("vim-rex-navigator").setup { 
@@ -205,7 +203,7 @@ vim.keymap.set({ "n", "t" }, "<M-w>", "<cmd>confirm quit<cr>")
 
 #### Vim
 
-On the Vim side, do the same in your `vimrc`. `g:vim_rex_navigator_focus`, `g:vim_rex_navigator_move`, `g:vim_rex_navigator_resize` and `g:vim_rex_navigator_close` set to `0` each turn off their own mappings:
+On the Vim side, do the same in your `vimrc`. `g:vim_rex_navigator_focus`, `g:vim_rex_navigator_move`, `g:vim_rex_navigator_resize` and `g:vim_rex_navigator_close` set to `0` each turn off their own bindings:
 
 ```vim
 let g:vim_rex_navigator_focus = 0
@@ -231,7 +229,7 @@ nnoremap <silent> <C-M-l> <Cmd>RexResizeRight<CR>
 nnoremap <silent> <M-w> <Cmd>confirm quit<CR>
 ```
 
-For terminal windows, add the same mappings with `tnoremap`.
+For terminal windows, add the same bindings with `tnoremap`.
 
 Neovim writes ⌘ as `<D-…>`, but Vim writes it as `<T-…>`. For example, ⌥⌘◀ is `<M-D-Left>` in Neovim and `<M-T-Left>` in Vim, and ⌘W is `<D-w>` in Neovim and `<T-w>` in Vim.
 
