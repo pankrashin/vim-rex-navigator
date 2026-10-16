@@ -181,7 +181,8 @@ require("vim-rex-navigator").setup {
   focus = false,
   move = false,
   resize = false,
-  close = false }
+  close = false
+}
 
 vim.keymap.set({ "n", "t" }, "<C-h>", "<cmd>RexFocusLeft<cr>")
 vim.keymap.set({ "n", "t" }, "<C-j>", "<cmd>RexFocusDown<cr>")
@@ -267,6 +268,6 @@ To fix it, tell fish that Rex reflows by adding this to `~/.config/fish/config.f
 
 ```fish
 if test "$TERM_PROGRAM" = rex
-    set -g fish_handle_reflow 0
+  set -g fish_handle_reflow 0
 end
 ```
