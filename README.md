@@ -50,7 +50,7 @@ require("vim-rex-navigator").setup {}
 With [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
- { "pankrashin/vim-rex-navigator", main = "vim-rex-navigator", opts = {} }
+{ "pankrashin/vim-rex-navigator", main = "vim-rex-navigator", opts = {} }
 ```
 
 ### Vim
@@ -159,16 +159,16 @@ require("vim-rex-navigator").setup {
 }
 ```
 
-   `focus`, `move`, `resize` and `close` set to `false` each turn off their own key bindings:
+`focus`, `move`, `resize` and `close` set to `false` each turn off their own key bindings:
 
-   ```lua
-   require("vim-rex-navigator").setup {
-     focus  = false,
-     move   = false,
-     resize = false,
-     close  = false,
-   }
-   ```
+```lua
+require("vim-rex-navigator").setup {
+  focus  = false,
+  move   = false,
+  resize = false,
+  close  = false,
+}
+```
 
 Rex then keeps its own behavior for those keys.
 
@@ -178,10 +178,10 @@ On the Neovim side, turn off the default bindings and map them yourself. `focus`
 
 ```lua
 require("vim-rex-navigator").setup { 
-  focus = false,
-  move = false,
+  focus  = false,
+  move   = false,
   resize = false,
-  close = false
+  close  = false,
 }
 
 vim.keymap.set({ "n", "t" }, "<C-h>", "<cmd>RexFocusLeft<cr>")
