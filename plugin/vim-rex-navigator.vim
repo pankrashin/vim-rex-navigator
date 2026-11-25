@@ -6,7 +6,7 @@ let g:loaded_vim_rex_navigator = 1
 let s:wincmd = {'left': 'h', 'down': 'j', 'up': 'k', 'right': 'l'}
 
 function! s:rex_do(action, dir) abort
-  if empty($REX_SESSION)
+  if empty($REX_BLOCK)
     return
   endif
 

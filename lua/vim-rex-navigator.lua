@@ -22,7 +22,7 @@ function M.move(dir)
   local target = vim.fn.win_getid(vim.fn.winnr(WINCMD[dir]))
   if target ~= 0 and target ~= current then
     swap_with(target)
-  elseif vim.env.REX_SESSION then
+  elseif vim.env.REX_BLOCK then
     vim.system({ 'rex', 'do', 'vim_rex_move', 'direction=' .. dir })
   end
 end
@@ -30,7 +30,7 @@ end
 function M.focus(dir)
   local win = vim.api.nvim_get_current_win()
   vim.cmd('wincmd ' .. WINCMD[dir])
-  if win == vim.api.nvim_get_current_win() and vim.env.REX_SESSION then
+  if win == vim.api.nvim_get_current_win() and vim.env.REX_BLOCK then
     vim.system({ 'rex', 'do', 'vim_rex_focus', 'direction=' .. dir })
   end
 end
@@ -52,7 +52,7 @@ function M.resize(dir, amount)
   end
 
   if before == current and after == current then
-    if vim.env.REX_SESSION then vim.system({ 'rex', 'do', 'vim_rex_resize', 'direction=' .. dir }) end
+    if vim.env.REX_BLOCK then vim.system({ 'rex', 'do', 'vim_rex_resize', 'direction=' .. dir }) end
     return
   end
 
