@@ -9,7 +9,7 @@ Focus, move, resize and close Vim windows and [Rex](https://www.superlogical.com
 
 By default this plugin utilizes the default Rex key bindings wherever it is possible:
 
-### Focus 
+### Focus
 
 - ⌥⌘ ◀ → Left
 - ⌥⌘ ▼ → Down
@@ -177,7 +177,7 @@ Rex then keeps its own behavior for those keys.
 On the Neovim side, turn off the default bindings and map them yourself. `focus`, `move`, `resize` and `close` each turn off their own bindings:
 
 ```lua
-require("vim-rex-navigator").setup { 
+require("vim-rex-navigator").setup {
   focus  = false,
   move   = false,
   resize = false,
@@ -255,19 +255,3 @@ require("vim-rex-navigator").setup { resize_amount = 10 }
 ```
 
 Vim windows are resized by 3 cells per key press.
-
-## Known Problems
-
-### Fish prompt is duplicated when resizing
-
-In [fish](https://fishshell.com), resizing a Rex pane can leave copies of the prompt behind, such as `user@host ~/…r…ok-pro user@host ~/.c/rex>`. Every resize adds more of them.
-
-This is not specific to this plugin and also happens when resizing panes with the mouse or resizing the window. Rex reflows the text on the screen when a pane changes width, and fish redraws its prompt at the same time. fish only skips the redraw in terminals it knows reflow on their own, and Rex is not one of them yet.
-
-To fix it, tell fish that Rex reflows by adding this to `~/.config/fish/config.fish`:
-
-```fish
-if test "$TERM_PROGRAM" = rex
-  set -g fish_handle_reflow 0
-end
-```
